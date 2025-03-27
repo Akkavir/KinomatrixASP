@@ -9,6 +9,32 @@
     margin: 0;
 }
 
+.intro-user-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.main-user-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#user-icon {
+    display: flex;
+    width: 40px; /* Adjust the size as needed */
+    height: 40px; /* Adjust the size as needed */
+    border: 2px solid #e94560; /* Circle outline color */
+    border-radius: 50%; /* Makes the circle */
+    align-items: center;
+    justify-content: center;
+}
+    #user-icon i {
+        font-size: 20px; /* Adjust the size as needed */
+        color: #e94560; /* Icon color */
+    }
+
 .intro-container {
     text-align: center;
     display: flex;
@@ -18,6 +44,10 @@
     gap: 15px;
     width: 80%;
     height: 80%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .logo {
@@ -34,7 +64,7 @@
 .search-box {
     display: flex;
     justify-content: center;
-    width: 70%;
+    width:33%;
     padding: 10px;
     border-radius: 30px;
 }
@@ -63,7 +93,10 @@ input {
     transition: all 0.3s ease;
 }
 
-
+#customToast {
+    background-color: #d1334a !important;
+    color: white !important;
+}
 
 button:hover {
     background-color: #d1334a;
@@ -306,4 +339,12 @@ header {
     margin-bottom:10px;
     border-radius: 10px;
     color:gold;
+}
+.toast-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    border: 10px solid black;
 }

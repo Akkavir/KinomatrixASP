@@ -4,16 +4,41 @@
     }
 }
 
+
+function showToast(message) {
+    // Get the toast element
+    const toastElement = document.getElementById('customToast');
+
+    // Set the text inside the toast body
+    const toastBody = toastElement.querySelector('.toast-body');
+    toastBody.textContent = message;
+
+    // Initialize the toast with Bootstrap
+    const toast = new bootstrap.Toast(toastElement);
+
+    // Show the toast
+    toast.show();
+
+    // Hide the toast after 3 seconds
+    setTimeout(() => {
+        toast.hide();
+    }, 2000);
+}
+
+
 function searchMovie() {
     const title = document.getElementById("search").value.trim();
     if (!title) {
-        alert("Enter a movie title.");
+        //alert("Enter a movie title!");
+
+        showToast('Enter a movie title!');
         return;
     }
 
     fetch(`api/movies/search?title=${encodeURIComponent(title)}`)
         .then(response => {
             if (!response.ok) {
+                showToast('Movie not found or API error.');
                 throw new Error("Movie not found or API error.");
             }
             return response.json();
@@ -21,7 +46,7 @@ function searchMovie() {
         .then(data => displayMovie(data))
         .catch(error => {
             console.error("Error fetching movie:", error);
-            alert("Movie not found!");
+            showToast('Movie not found!');
         });
 }
 
@@ -62,6 +87,9 @@ function displayMovie(movie) {
             <p id="ratings">IMDb: ${generateRatings(movie) }</p>
             <div id="genres">${formatGenres(movie.Genre)}</div>
         </div>
+        </div>
+                            <div class="main-user-icon" id="user-icon">
+            <i class="far fa-user"></i>
         </div>
     `;
 
