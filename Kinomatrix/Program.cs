@@ -6,7 +6,7 @@ namespace Kinomatrix
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpClient();
-
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -29,7 +29,8 @@ namespace Kinomatrix
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}"
+            );
 
             app.Run();
         }
