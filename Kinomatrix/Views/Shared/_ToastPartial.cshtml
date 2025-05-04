@@ -1,0 +1,39 @@
+﻿<!-- Toast HTML Structure -->
+<div class="position-fixed top-50 start-50 translate-middle">
+    <div id="customToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <!-- Toast message will be inserted here -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast JavaScript Setup -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    @if (TempData["ToastMessage"] != null)
+    {
+        <text>
+                showToast('@TempData["ToastMessage"]');
+        </text>
+    }
+    });
+
+    function showToast(message) {
+        // Get the toast element
+        const toastElement = document.getElementById('customToast');
+        // Set the text inside the toast body
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        // Initialize the toast with Bootstrap
+        const toast = new bootstrap.Toast(toastElement);
+        // Show the toast
+        toast.show();
+        // Hide the toast after 2 seconds
+        setTimeout(() => {
+            toast.hide();
+        }, 3000);
+    }
+</script>

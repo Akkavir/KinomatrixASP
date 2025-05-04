@@ -1,5 +1,4 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +9,107 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 
 
+    <style>
+
+        button {
+            width: auto;
+            padding: 10px 30px;
+            font-size: 20px;
+            border: none;
+            background-color: #e94560;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-radius: 5px 20px 5px 20px;
+        }
+
+        .auth-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 400px;
+            min-height: 500px; /* lub więcej, zależnie od formularza */
+        }
+
+        input{
+            border-radius: 5px 25px 5px 25px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+            .tabs button {
+                flex: 1;
+                padding: 10px;
+                cursor: pointer;
+            }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .auth-form input {
+                padding: 10px;
+            }
+
+            .auth-form button {
+                padding: 10px;
+            }
+
+        .hidden {
+            display: none;
+        }
+
+        .tabs button {
+            background-color: #222831;
+            color: #424242;
+        }
+
+        .tabs button.active-tab {
+			background-color: #e94560;
+            color: white;
+        }
+
+
+
+    </style>
+
+    <script>
+        function switchForm(formType) {
+            const login = document.getElementById("loginForm");
+            const register = document.getElementById("registerForm");
+            const buttons = document.querySelectorAll(".tabs button");
+
+            buttons.forEach(btn => btn.classList.remove("active-tab"));
+
+            if (formType === "login") {
+                login.classList.remove("hidden");
+                register.classList.add("hidden");
+                buttons[0].classList.add("active-tab");
+            } else {
+                register.classList.remove("hidden");
+                login.classList.add("hidden");
+                buttons[1].classList.add("active-tab");
+            }
+        }
+
+        function clearInputs(){
+			document.getElementById("loginForm").reset();
+			document.getElementById("registerForm").reset();
+        }
+
+        // Domyślnie zaznacz login
+        window.onload = () => switchForm('login');
+    </script>
+
+
 </head>
 <body>
-    <div class="intro-container">
+<div class="intro-container">
         <div class="brand-container" onclick="goBack()">
             <!-- Film reel logo SVG -->
             <svg class="logo" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
@@ -22,24 +119,44 @@
             </svg>
             <h1 id="title">Kinomatrix</h1>
         </div>
-        <form method="get" action="/Movies/GetMovie" class="search-box">
-            <input type="text" name="title" placeholder="Enter movie title..." required />
-            <button id="search-button" type="submit">Search</button>
+
+    <div class="auth-container">
+        <div class="tabs">
+            <button onclick="switchForm('login')">Login</button>
+            <button onclick="switchForm('register')">Register</button>
+        </div>
+
+        <form method="post" asp-controller="Account" asp-action="Login" id="loginForm" class="auth-form">
+            <input type="text" name="Username" placeholder="Username" required />
+            <input type="password" name="Password" placeholder="Password" required />
+                <button onclick="clearInputs" type="submit">Login</button>
+        </form>
+
+        <form method="post" asp-controller="Account" asp-action="Register" id="registerForm" class="auth-form hidden">
+            <input type="text" name="Username" placeholder="Username" required />
+            <input type="password" name="Password" placeholder="Password" required />
+            <input type="password" name="ConfirmPassword" placeholder="Confirm Password" required />
+            <button onclick="clearInputs" type="submit">Register</button>
         </form>
     </div>
-
-    <div class="position-fixed top-50 start-50 translate-middle">
-        <div id="customToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    Hello, world! This is a toast message.
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-
+</div>
 
     <script src="js/script.js"></script>
 </body>
-</html>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+        @if (TempData["ToastMessage"] != null)
+        {
+            <text>
+                    showToast('@TempData["ToastMessage"]');
+            </text>
+        }
+        });
+    </script>
+
+
+}

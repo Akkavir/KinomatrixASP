@@ -34,6 +34,26 @@
             <div id="title">
                 <h1>@Model.Title</h1>
                 <sup>  <a class="imdb-link" target="_blank" href="https://www.imdb.com/title/@Model.ImdbID">[IMDb]</a></sup>
+
+                <div class="userdata" style="visibility: visible">
+                    <label class="watchlist-toggle">
+                        <input type="checkbox" id="watchlist" />
+                        <span class="custom-checkbox"></span>
+                        Add to Watchlist
+                    </label>
+
+                    <label for="rating">Your Rating:</label>
+                    <div class="custom-select-wrapper">
+                        <select id="rating" class="rating-select">
+                            <option value="">--</option>
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <p id="details">@Model.Year | @Model.Runtime | @Model.Genre</p>
@@ -51,7 +71,11 @@
             <p id="avgratings">@((Model.AverageRating).ToString())/10</p>
             <p id="ratings">@Model.AllRatings</p>
         </div>
+
+
+
     </div>
+
 
     <div class="main-user-icon" id="user-icon">
         <i class="far fa-user"></i>

@@ -4,6 +4,12 @@
     }
 }
 
+function debugmsg() {
+    console.log("test");
+}
+function goBack() {
+    window.location.href = "/";
+}
 
 function showToast(message) {
     // Get the toast element

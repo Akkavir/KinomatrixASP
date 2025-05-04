@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using System;
+
 namespace Kinomatrix
 {
     public class Program
@@ -6,11 +9,16 @@ namespace Kinomatrix
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpClient();
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddSession();
             var app = builder.Build();
+            app.UseSession();
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
