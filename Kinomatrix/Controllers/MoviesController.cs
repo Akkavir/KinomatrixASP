@@ -96,6 +96,22 @@ namespace Kinomatrix.Controllers
             data.Ratings[0].Source = "IMDb";
             return string.Join(", ", ((IEnumerable<dynamic>)data.Ratings).Select(r => $"{r.Source}: {r.Value}"));
         }
+        public string GenerateStars(decimal? rating)
+        {
+            if (!rating.HasValue)
+                return new string('☆', 10); // or throw, depending on your needs
+
+            // Normalize rating to 0–10 scale and round to nearest whole number
+            int filledStars = (int)Math.Round(rating.Value, MidpointRounding.AwayFromZero);
+
+            // Clamp value to [0, 10] to prevent overflow
+            filledStars = Math.Min(10, Math.Max(0, filledStars));
+
+            int emptyStars = 10 - filledStars;
+
+            return new string('★', filledStars) + new string('☆', emptyStars);
+        }
+
 
 
         public async Task<IActionResult> GetMovie(string title)
@@ -139,8 +155,9 @@ namespace Kinomatrix.Controllers
             }
 
             var model = JsonConvert.DeserializeObject<MovieDetailsViewModel>(response);
-            model.AverageRating = CalculateFullRating(response);
+            model.AverageRating = (CalculateFullRating(response))/ 10;
             model.AllRatings = Ratings(response);
+            model.Stars = GenerateStars((int)Math.Round((decimal)model.AverageRating));
             return View("MovieDetails", model);
         }
     }

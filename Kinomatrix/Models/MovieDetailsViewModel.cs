@@ -13,7 +13,7 @@
     public string Poster { get; set; }
     public string ImdbID { get; set; }
     public string AllRatings { get; set; }
-
     public int? AverageRating { get; set; }
+    public string Stars { get; set; }
 
 }

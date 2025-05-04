@@ -26,22 +26,29 @@
             <input type="text" id="search" name="title" placeholder="Enter movie title..." required />
             <button id="search-buttonhd" type="submit">Search</button>
         </form>
+
     </header>
 
     <div id="movie-info">
         <div class="left-column">
-            <h1><a id="title" target="_blank" href="https://www.imdb.com/title/@Model.ImdbID">@Model.Title</a></h1>
+            <div id="title">
+                <h1>@Model.Title</h1>
+                <sup>  <a class="imdb-link" target="_blank" href="https://www.imdb.com/title/@Model.ImdbID">[IMDb]</a></sup>
+            </div>
+
             <p id="details">@Model.Year | @Model.Runtime | @Model.Genre</p>
             <p id="language-country">@Model.Language | @Model.Country</p>
             <ul id="crew">
                 <li><strong>Director:</strong> @Model.Director</li>
                 <li><strong>Writer:</strong> @Model.Writer</li>
-                <li><strong>Actors:</strong> @Model.Actors</li>
+                <li><strong>Main actors:</strong> @Model.Actors</li>
             </ul>
             <p id="plot">@Model.Plot</p>
         </div>
         <div class="right-column">
             <img id="poster" src="@Model.Poster" alt="Movie Poster">
+            <div id="stars">@(Model.Stars)</div>
+            <p id="avgratings">@((Model.AverageRating).ToString())/10</p>
             <p id="ratings">@Model.AllRatings</p>
         </div>
     </div>
@@ -49,5 +56,8 @@
     <div class="main-user-icon" id="user-icon">
         <i class="far fa-user"></i>
     </div>
+
+
+    <script src="js/script.js"></script>
 </body>
 </html>

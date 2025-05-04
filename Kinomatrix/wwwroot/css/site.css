@@ -60,7 +60,24 @@
     font-size: 50px;
     margin-bottom: 5px;
     color: #e94560;
+    display: flex;
+    align-items: baseline; /* aligns h1 and superscript nicely */
+    gap: 10px;
 }
+
+.imdb-link {
+    font-size: 0.5em;
+
+    text-decoration: none;
+    color: #555;
+}
+
+    .imdb-link::before {
+        content: "🔗";
+        font-size: 0.7em;
+        margin-left: 2px;
+    }
+
 
 .search-box {
     display: flex;
@@ -119,7 +136,7 @@ button:hover {
     border-radius: 10px;
     padding-top: 5%;
     padding-bottom: 5%;
-    border: 1px solid red;
+    border: 3px solid black;
 }
 
 /* Left Column */
@@ -132,7 +149,6 @@ button:hover {
         font-size: 40px;
         margin-bottom: 20px;
         color: #e94560;
-        max-width:50%;
     }
 
     .left-column p,
@@ -180,63 +196,21 @@ button:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-#star-rating {
+#stars {
     display: flex;
     align-items: center;
-    font-size: 50px;
+    font-size: 40px;
     color: gold;
 }
 
-.star {
-    padding-bottom: 3%;
-    position: relative;
-    width: 1em;
-    height: 1em;
-    display: inline-block;
-    overflow: hidden;
-}
 
 
 
-.star-empty, .star-filled {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 1em;
-    font-size: inherit;
-}
-
-.star-empty {
-    height: 99%;
-}
-
-    .star-empty::before, .star-filled::before {
-        content: "★";
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
-    .star-empty::before {
-        color: #444; /* Gray color for empty stars */
-    }
-
-.star-filled {
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-    .star-filled::before {
-        color: #FFD700; /* Gold color for filled part */
-        width: 100%;
-        font-size: inherit;
-    }
-
-.rating-text {
+#ratings {
+    margin-top: 1%;
     margin-left: 10px;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 16px;
+    color: lightslategray;
 }
 
 /* Genre Buttons */
@@ -341,14 +315,17 @@ header {
     /* Use the original button color */
 }
 
-#average-rating {
+
+
+
+#avgratings {
     font-size: 20px;
     background: black;
     border: none;
     padding: 10px 20px;
-    margin-bottom:10px;
+    margin-bottom: 10px;
     border-radius: 10px;
-    color:gold;
+    color: gold;
 }
 .toast-container {
     position: fixed;
