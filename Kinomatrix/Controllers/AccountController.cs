@@ -4,6 +4,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Kinomatrix.Controllers;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 public class AccountController : Controller
 {
@@ -44,7 +46,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public IActionResult Login(string username, string password)
+    public async Task<IActionResult> Login(string username, string password)
     {
         string hash = ComputeHash(password);
 
@@ -55,17 +57,28 @@ public class AccountController : Controller
                  .WithToast(this, "Invalid login credentials!");
         }
 
-        HttpContext.Session.SetInt32("UserId", user.Id);
+        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+    };
+
+        var identity = new ClaimsIdentity(claims, "Cookies");
+        var principal = new ClaimsPrincipal(identity);
+
+        await HttpContext.SignInAsync("Cookies", principal);
+
         return RedirectToAction("Index", "Home")
            .WithToast(this, "Login successful!");
     }
 
-    [HttpGet]
-    public IActionResult Logout()
+    [HttpPost]
+    public async Task<IActionResult> Logout()
     {
-        HttpContext.Session.Remove("UserId");
-        return RedirectToAction("Login");
+        await HttpContext.SignOutAsync("Cookies");
+        return RedirectToAction("LoginRegister");
     }
+
 
     private string ComputeHash(string input)
     {

@@ -54,6 +54,7 @@
                     </div>
                 </div>
 
+
             </div>
 
             <p id="details">@Model.Year | @Model.Runtime | @Model.Genre</p>
@@ -83,5 +84,44 @@
 
 
     <script src="js/script.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ratingSelect = document.getElementById("rating");
+            const watchlistCheckbox = document.getElementById("watchlist");
+
+            function save() {
+                const rating = ratingSelect.value;
+                const inWatchlist = watchlistCheckbox.checked;
+                const movieId = "@Model.ImdbID";
+
+                fetch('/Movies/SaveInteraction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include', // ← to dodaje ciasteczko sesji
+                    body: JSON.stringify({
+                        movieId: movieId,
+                        inWatchlist: inWatchlist,
+                        rating: rating ? parseInt(rating) : null
+                    })
+                });
+
+            }
+
+            ratingSelect.addEventListener("change", save);
+            watchlistCheckbox.addEventListener("change", save);
+        });
+    </script>
+
+
 </body>
+
+
+
+
+
 </html>
+

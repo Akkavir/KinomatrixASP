@@ -7,4 +7,6 @@
     public int? Rating { get; set; } // 1-10, null if not rated
 
     public User User { get; set; }
+
+    public DateTime DateTime { get; set; }
 }

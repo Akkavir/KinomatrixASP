@@ -16,14 +16,15 @@ namespace Kinomatrix.Controllers
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _config;
         private static readonly Random _random = new Random();
+        private readonly AppDbContext _context;
 
 
 
-
-        public MoviesController(HttpClient httpClient, IConfiguration config)
+        public MoviesController(HttpClient httpClient, IConfiguration config, AppDbContext context)
         {
             _httpClient = httpClient;
             _config = config;
+            _context = context; // <--- to był brakujący kawałek
         }
 
         public static int? CalculateFullRating(string jsonResponse)
@@ -155,11 +156,44 @@ namespace Kinomatrix.Controllers
             }
 
             var model = JsonConvert.DeserializeObject<MovieDetailsViewModel>(response);
-            model.AverageRating = (CalculateFullRating(response))/ 10;
+            model.AverageRating = (CalculateFullRating(response)) / 10;
             model.AllRatings = Ratings(response);
             model.Stars = GenerateStars((int)Math.Round((decimal)model.AverageRating));
             return View("MovieDetails", model);
         }
+
+
+        [HttpPost]
+        public IActionResult SaveInteraction(string movieId, bool inWatchlist, int? rating)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return Unauthorized();
+            var interaction = _context.MovieInteractions
+                .FirstOrDefault(m => m.UserId == userId && m.MovieId == movieId);
+
+            if (interaction == null)
+            {
+                interaction = new MovieInteraction
+                {
+                    UserId = userId.Value,
+                    MovieId = movieId,
+                    InWatchlist = inWatchlist,
+                    Rating = rating,
+                    DateTime = DateTime.Now
+                };
+                _context.MovieInteractions.Add(interaction);
+            }
+            else
+            {
+                interaction.InWatchlist = inWatchlist;
+                interaction.Rating = rating;
+                interaction.DateTime = DateTime.Now;
+            }
+
+            _context.SaveChanges();
+            return Ok();
+        }
+
     }
 }
 

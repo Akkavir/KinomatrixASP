@@ -1,0 +1,109 @@
+﻿@model List<MovieInteraction>
+@using Microsoft.AspNetCore.WebUtilities
+
+@{
+    ViewData["Title"] = "Your Profile";
+}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
+
+    <style>
+        th {
+            color: #e94560;
+        }
+        #usercontent {
+            width: 130%;
+            gap: 20px;
+            margin-top: 50px;
+            height: auto;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            border-radius: 10px;
+            padding-top: 5%;
+            padding-bottom: 5%;
+        }
+
+            button:hover {
+                background-color: #d1334a;
+            }
+
+        #thebutton {
+            width: auto;
+            padding: 5px 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 0px 0px 20px 20px;
+            background-color: #e94560;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: flex-start; /* Changed from 'center' to 'flex-start' */
+            justify-content: center; /* Kept as 'center' for horizontal centering */
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <button id="thebutton" href="/">
+            Back
+        </button>
+    <div id="usercontent" class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Witaj, @User.Identity.Name</h2>
+            <form method="post" action="/Account/Logout">
+                <button class="btn btn-danger" type="submit">Logout</button>
+            </form>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Movie Title</th>
+                    <th>Rating</th>
+                    <th>Watchlist</th>
+                    <th>Last Modified</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a href="/Movies/GetMovie?title=@item.MovieId">@item.MovieId</a>
+                        </td>
+                        <td>@(item.Rating?.ToString() ?? "-")</td>
+                        <td>@(item.InWatchlist ? "Yes" : "No")</td>
+                        <td>@item.DateTime.ToString("g")</td>
+                        <td>
+                            <form method="post" asp-action="Delete" asp-controller="User">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                    🗑
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>

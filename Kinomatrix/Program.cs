@@ -13,6 +13,13 @@ namespace Kinomatrix
 
             builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             // Add services to the container.
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = "/Account/LoginRegister";
+                    options.LogoutPath = "/Account/Logout";
+                });
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
             var app = builder.Build();
