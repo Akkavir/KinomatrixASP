@@ -21,9 +21,15 @@ namespace Kinomatrix
                 });
 
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1); // lub inny czas
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             var app = builder.Build();
-            app.UseSession();
+
 
 
 
@@ -39,7 +45,8 @@ namespace Kinomatrix
             app.UseStaticFiles();
             app.UseDefaultFiles();
             app.UseRouting();
-
+            app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

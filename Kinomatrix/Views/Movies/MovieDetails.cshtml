@@ -1,4 +1,5 @@
 ﻿@model MovieDetailsViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,6 +9,7 @@
     <title>@Model.Title - Kinomatrix</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 </head>
@@ -78,12 +80,7 @@
     </div>
 
 
-    <div class="main-user-icon" id="user-icon">
-        <i class="far fa-user"></i>
-    </div>
-
-
-    <script src="js/script.js"></script>
+    <script src="~/js/script.js"></script>
 
 
     <script>
@@ -94,7 +91,11 @@
             function save() {
                 const rating = ratingSelect.value;
                 const inWatchlist = watchlistCheckbox.checked;
-                const movieId = "@Model.ImdbID";
+                var movieId = "0";
+
+                if (movieId == null) {
+                    movieId = "0";
+                }
 
                 fetch('/Movies/SaveInteraction', {
                     method: 'POST',
@@ -115,6 +116,7 @@
             watchlistCheckbox.addEventListener("change", save);
         });
     </script>
+
 
 
 </body>

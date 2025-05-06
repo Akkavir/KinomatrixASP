@@ -5,7 +5,8 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Kinomatrix.Models; // Dodaj referencję do modeli
+using Kinomatrix.Models;
+using System.Security.Claims; // Dodaj referencję do modeli
 
 
 namespace Kinomatrix.Controllers
@@ -166,8 +167,17 @@ namespace Kinomatrix.Controllers
         [HttpPost]
         public IActionResult SaveInteraction(string movieId, bool inWatchlist, int? rating)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null) return Unauthorized();
+            int? userId = int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var uid) ? uid : (int?)null;
+            if (userId == null)
+            {
+                Console.WriteLine("Session userId is null");
+                foreach (var key in HttpContext.Session.Keys)
+                {
+                    Console.WriteLine($"Session key: {key}");
+                }
+
+                return Unauthorized();
+            }
             var interaction = _context.MovieInteractions
                 .FirstOrDefault(m => m.UserId == userId && m.MovieId == movieId);
 
@@ -176,7 +186,7 @@ namespace Kinomatrix.Controllers
                 interaction = new MovieInteraction
                 {
                     UserId = userId.Value,
-                    MovieId = movieId,
+                    MovieId = "0",
                     InWatchlist = inWatchlist,
                     Rating = rating,
                     DateTime = DateTime.Now
