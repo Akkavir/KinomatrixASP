@@ -421,3 +421,23 @@ margin-left:auto;
     cursor: pointer;
     color: #e94560;
 }
+
+th {
+    color: #e94560;
+}
+
+#thebutton {
+    width: auto;
+    padding: 5px 20px;
+    font-size: 20px;
+    border: none;
+    border-radius: 0px 0px 20px 20px;
+    background-color: #e94560;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+td {
+    color: whitesmoke;
+}

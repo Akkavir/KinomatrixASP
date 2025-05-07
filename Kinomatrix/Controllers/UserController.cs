@@ -14,17 +14,28 @@ namespace Kinomatrix.Controllers
             _context = context;
         }
 
-        public IActionResult Profile()
+        public IActionResult Profile(string sortBy = "DateTime", string sortOrder = "desc")
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var interactions = _context.MovieInteractions
-                .Where(x => x.UserId == userId)
-                .OrderByDescending(x => x.DateTime)
-                .ToList();
+                .Where(x => x.UserId == userId);
 
-            return View(interactions);
+            interactions = (sortBy, sortOrder.ToLower()) switch
+            {
+                ("MovieId", "asc") => interactions.OrderBy(x => x.MovieId),
+                ("MovieId", "desc") => interactions.OrderByDescending(x => x.MovieId),
+                ("Rating", "asc") => interactions.OrderBy(x => x.Rating),
+                ("Rating", "desc") => interactions.OrderByDescending(x => x.Rating),
+                ("InWatchlist", "asc") => interactions.OrderBy(x => x.InWatchlist),
+                ("InWatchlist", "desc") => interactions.OrderByDescending(x => x.InWatchlist),
+                ("DateTime", "asc") => interactions.OrderBy(x => x.DateTime),
+                _ => interactions.OrderByDescending(x => x.DateTime)
+            };
+
+            return View(interactions.ToList());
         }
+
 
         [HttpPost]
         public IActionResult Delete(int id)

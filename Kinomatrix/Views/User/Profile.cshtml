@@ -14,8 +14,11 @@
 
 
     <style>
-        th {
-            color: #e94560;
+
+
+        a {
+            text-decoration: none;
+            color: inherit;
         }
         #usercontent {
             width: 130%;
@@ -34,17 +37,7 @@
                 background-color: #d1334a;
             }
 
-        #thebutton {
-            width: auto;
-            padding: 5px 20px;
-            font-size: 20px;
-            border: none;
-            border-radius: 0px 0px 20px 20px;
-            background-color: #e94560;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
+
 
         body {
             background: #111;
@@ -56,14 +49,12 @@
             height: 100vh;
             margin: 0;
         }
-        td {
-            color:whitesmoke;
-        }
+
     </style>
     <script>
 
         function GoBack(){
-			window.history.back();
+            window.location.href = "/";
         }
 
     </script>
@@ -81,17 +72,55 @@
                 <button class="btn btn-danger" type="submit">Logout</button>
             </form>
         </div>
+        @{
+            string currentSortBy = Context.Request.Query["sortBy"];
+            string currentSortOrder = Context.Request.Query["sortOrder"];
+
+            Func<string, string> sortIcon = (field) =>
+            {
+                if (currentSortBy == field)
+                {
+                    return currentSortOrder == "asc"
+                ? "<i class=\"fas fa-arrow-up\"></i>"
+                : "<i class=\"fas fa-arrow-down\"></i>";
+                }
+                return "";
+            };
+
+
+            Func<string, string> nextOrder = (field) =>
+            (currentSortBy == field && currentSortOrder == "asc") ? "desc" : "asc";
+        }
+
 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Movie Title</th>
-                    <th>Rating</th>
-                    <th>Watchlist</th>
-                    <th>Last Modified</th>
+                    <th>
+                        <a href="@Url.Action("Profile", new { sortBy = "MovieId", sortOrder = nextOrder("MovieId") })">
+                            Movie Title @Html.Raw(sortIcon("MovieId"))
+                        </a>
+                    </th>
+                    <th>
+                        <a href="@Url.Action("Profile", new { sortBy = "Rating", sortOrder = nextOrder("Rating") })">
+                            Rating @Html.Raw(sortIcon("Rating"))
+                        </a>
+                    </th>
+                    <th>
+                        <a href="@Url.Action("Profile", new { sortBy = "InWatchlist", sortOrder = nextOrder("InWatchlist") })">
+                            Watchlist @Html.Raw(sortIcon("InWatchlist"))
+                        </a>
+                    </th>
+                    <th>
+                        <a href="@Url.Action("Profile", new { sortBy = "DateTime", sortOrder = nextOrder("DateTime") })">
+                            Last Modified @Html.Raw(sortIcon("DateTime"))
+                        </a>
+                    </th>
                     <th></th>
                 </tr>
             </thead>
+
+
             <tbody>
                 @foreach (var item in Model)
                 {

@@ -1,0 +1,43 @@
+﻿@model List<User>
+
+@{
+    ViewBag.Title = "User Management";
+}
+<body>
+<button onclick="GoBack()" href="/">
+    Back
+</button>
+<h2>User Management</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Password Hash</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Username</td>
+                <td>@user.PasswordHash</td>
+                <td>
+                    <form asp-action="Delete" method="post" asp-controller="Admin" asp-route-id="@user.Id" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+        function GoBack(){
+            window.location.href = "/";
+        }
+</script>
+</body>
