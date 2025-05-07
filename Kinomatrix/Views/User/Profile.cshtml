@@ -60,17 +60,23 @@
             color:whitesmoke;
         }
     </style>
+    <script>
 
+        function GoBack(){
+			window.history.back();
+        }
+
+    </script>
 
 </head>
 <body>
 
-    <button id="thebutton" href="/">
+    <button id="thebutton" onclick="GoBack()" href="/">
             Back
         </button>
     <div id="usercontent" class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Witaj, @User.Identity.Name</h2>
+            <h2>Hi, @User.Identity.Name</h2>
             <form method="post" action="/Account/Logout">
                 <button class="btn btn-danger" type="submit">Logout</button>
             </form>
@@ -94,13 +100,13 @@
                             <a href="/Movies/GetMovie?title=@item.MovieId">@item.MovieId</a>
                         </td>
                         <td>@(item.Rating?.ToString() ?? "-")</td>
-                        <td>@(item.InWatchlist ? "Yes" : "No")</td>
+                        <td>@(item.InWatchlist ? "✅" : "-")</td>
                         <td>@item.DateTime.ToString("g")</td>
                         <td>
                             <form method="post" asp-action="Delete" asp-controller="User">
                                 <input type="hidden" name="id" value="@item.Id" />
                                 <button class="btn btn-sm btn-outline-danger" type="submit">
-                                    🗑
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
                         </td>

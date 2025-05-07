@@ -165,44 +165,43 @@ namespace Kinomatrix.Controllers
 
 
         [HttpPost]
-        public IActionResult SaveInteraction(string movieId, bool inWatchlist, int? rating)
+        public IActionResult SaveInteraction([FromBody] InteractionDto data)
         {
             int? userId = int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var uid) ? uid : (int?)null;
             if (userId == null)
             {
                 Console.WriteLine("Session userId is null");
-                foreach (var key in HttpContext.Session.Keys)
-                {
-                    Console.WriteLine($"Session key: {key}");
-                }
-
                 return Unauthorized();
             }
+
+            Console.WriteLine($"userId: {userId}, movieId: {data.MovieId}, inWatchlist: {data.InWatchlist}, rating: {data.Rating}");
+
             var interaction = _context.MovieInteractions
-                .FirstOrDefault(m => m.UserId == userId && m.MovieId == movieId);
+                .FirstOrDefault(m => m.UserId == userId && m.MovieId == data.MovieId);
 
             if (interaction == null)
             {
                 interaction = new MovieInteraction
                 {
                     UserId = userId.Value,
-                    MovieId = "0",
-                    InWatchlist = inWatchlist,
-                    Rating = rating,
+                    MovieId = data.MovieId ?? "0",
+                    InWatchlist = data.InWatchlist,
+                    Rating = data.Rating,
                     DateTime = DateTime.Now
                 };
                 _context.MovieInteractions.Add(interaction);
             }
             else
             {
-                interaction.InWatchlist = inWatchlist;
-                interaction.Rating = rating;
+                interaction.InWatchlist = data.InWatchlist;
+                interaction.Rating = data.Rating;
                 interaction.DateTime = DateTime.Now;
             }
 
             _context.SaveChanges();
             return Ok();
         }
+
 
     }
 }

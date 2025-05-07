@@ -91,11 +91,11 @@
             function save() {
                 const rating = ratingSelect.value;
                 const inWatchlist = watchlistCheckbox.checked;
-                var movieId = "0";
 
-                if (movieId == null) {
-                    movieId = "0";
-                }
+                console.log("Rating:", rating);
+				console.log("In Watchlist:", inWatchlist);
+
+                var movieId = "@Model.Title";
 
                 fetch('/Movies/SaveInteraction', {
                     method: 'POST',
