@@ -9,4 +9,7 @@
     public User User { get; set; }
 
     public DateTime DateTime { get; set; }
+
+    public List<string> Genres { get; set; } = new List<string>();
+
 }

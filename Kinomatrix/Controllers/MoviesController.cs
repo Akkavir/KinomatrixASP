@@ -174,7 +174,7 @@ namespace Kinomatrix.Controllers
                 return Unauthorized();
             }
 
-            Console.WriteLine($"userId: {userId}, movieId: {data.MovieId}, inWatchlist: {data.InWatchlist}, rating: {data.Rating}");
+            Console.WriteLine($"userId: {userId}, movieId: {data.MovieId}, inWatchlist: {data.InWatchlist}, rating: {data.Rating}, genre: {data.Genres}");
 
             var interaction = _context.MovieInteractions
                 .FirstOrDefault(m => m.UserId == userId && m.MovieId == data.MovieId);
@@ -187,7 +187,8 @@ namespace Kinomatrix.Controllers
                     MovieId = data.MovieId ?? "0",
                     InWatchlist = data.InWatchlist,
                     Rating = data.Rating,
-                    DateTime = DateTime.Now
+                    DateTime = DateTime.Now,
+                    Genres = data.Genres
                 };
                 _context.MovieInteractions.Add(interaction);
             }
@@ -196,6 +197,7 @@ namespace Kinomatrix.Controllers
                 interaction.InWatchlist = data.InWatchlist;
                 interaction.Rating = data.Rating;
                 interaction.DateTime = DateTime.Now;
+                interaction.Genres = data.Genres;
             }
 
             _context.SaveChanges();

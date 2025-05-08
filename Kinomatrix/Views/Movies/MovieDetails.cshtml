@@ -91,9 +91,9 @@
             function save() {
                 const rating = ratingSelect.value;
                 const inWatchlist = watchlistCheckbox.checked;
+                const MovieGenres = "@Model.Genre".split(',').map(genre => genre.trim());
 
-                console.log("Rating:", rating);
-				console.log("In Watchlist:", inWatchlist);
+                console.log("Genre:", MovieGenres);
 
                 var movieId = "@Model.Title";
 
@@ -106,7 +106,8 @@
                     body: JSON.stringify({
                         movieId: movieId,
                         inWatchlist: inWatchlist,
-                        rating: rating ? parseInt(rating) : null
+                        rating: rating ? parseInt(rating) : null,
+						genres: MovieGenres
                     })
                 });
 
