@@ -33,18 +33,24 @@ namespace Kinomatrix.Controllers
             dynamic data = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
             int validRatingCount = 0;
             double totalRating = 0;
-
-            if (data != null && data.imdbRating != null)
+           
+            if (data != null && data.Ratings[0].Value != null)
             {
-                if (double.TryParse(data.imdbRating.ToString(), out double imdbRating))
+                string ratingValue = data.Ratings[0].Value;
+                string[] parts = ratingValue.Split('/');
+
+
+                string normalizedRating = parts[0].Replace('.', ','); // For locales that use comma
+                if (float.TryParse(normalizedRating, out float rating))
                 {
-                    totalRating += imdbRating * 10;
+                    int imdratingtenth = (int)Math.Round(rating * 10, MidpointRounding.AwayFromZero);
+                    totalRating += imdratingtenth;
                     validRatingCount++;
+                    Console.WriteLine(imdratingtenth); // Output: 36
                 }
                 else
                 {
-                    // Handle invalid IMDb rating format
-                    Console.WriteLine("Invalid IMDb rating format.");
+                    Console.WriteLine("Failed to parse the rating value: " + parts[0]);
                 }
             }
 
