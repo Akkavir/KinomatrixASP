@@ -17,44 +17,73 @@
 
 
         a {
-            text-decoration: none;
-            color: inherit;
+        text-decoration: none;
+        color: inherit;
         }
         #usercontent {
-            width: 130%;
-            gap: 20px;
-            margin-top: 50px;
-            height: auto;
-            align-items: center;
-            justify-content: center;
-            margin: auto;
-            border-radius: 10px;
-            padding-top: 5%;
-            padding-bottom: 5%;
+        width: 130%;
+        gap: 20px;
+        margin-top: 50px;
+        height: auto;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        border-radius: 10px;
+        padding-top: 5%;
+        padding-bottom: 5%;
         }
 
-            button:hover {
-                background-color: #d1334a;
-            }
+        button:hover {
+        background-color: #d1334a;
+        }
+
+        #genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        }
+
+        #genres span {
+        background: black;
+        border: none;
+        padding: 15px 25px;
+        margin: 7px;
+        cursor: pointer;
+        border-radius: 10px;
+        }
+
+        #genres span:hover {
+        background: #d1334a;
+        }
+
+        #genres-label {
+            margin-right: 10px;
+            font-size: 16px;
+            vertical-align: middle;
+        }
+        #genres span:last-child {
+    background-color: #333;
+    font-weight: bold;
+}
 
 
 
         body {
-            background: #111;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: flex-start; /* Changed from 'center' to 'flex-start' */
-            justify-content: center; /* Kept as 'center' for horizontal centering */
-            height: 100vh;
-            margin: 0;
+        background: #111;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        align-items: flex-start; /* Changed from 'center' to 'flex-start' */
+        justify-content: center; /* Kept as 'center' for horizontal centering */
+        height: 100vh;
+        margin: 0;
         }
 
     </style>
     <script>
 
         function GoBack(){
-            window.location.href = "/";
+        window.location.href = "/";
         }
 
     </script>
@@ -63,15 +92,74 @@
 <body>
 
     <button id="thebutton" onclick="GoBack()" href="/">
-            Back
-        </button>
+        Back
+    </button>
     <div id="usercontent" class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        @{
+            var genreCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var item in Model)
+            {
+                if (item.Rating.HasValue && item.Rating > 7)
+                {
+                    if (!string.IsNullOrEmpty(item.Genres))
+                    {
+                        var genres = item.Genres.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var genre in genres)
+                        {
+                            var trimmed = genre.Trim();
+                            if (genreCounts.ContainsKey(trimmed))
+                                genreCounts[trimmed]++;
+                            else
+                                genreCounts[trimmed] = 1;
+                        }
+                    }
+                }
+            }
+
+            var topGenres = genreCounts
+            .OrderByDescending(g => g.Value)
+            .Take(3)
+            .Select(g => g.Key)
+            .ToList();
+        }
+
+        <div class="d-flex justify-content-between align-items-center mb-4 w-100">
             <h2>Hi, @User.Identity.Name</h2>
-            <form method="post" action="/Account/Logout">
-                <button class="btn btn-danger" type="submit">Logout</button>
-            </form>
+            <div class="d-flex align-items-center">
+                @if (topGenres.Any())
+                {
+                    <div class="me-3 text-white">
+                        <strong>Your top genres:</strong>
+                    </div>
+                }
+                <div id="genres">
+                    @foreach (var genre in topGenres)
+                    {
+                        <span onclick="window.location.href='https://www.imdb.com/search/title/?title_type=feature,tv_movie,tv_special,video,tv_series,tv_miniseries&genres=@genre.ToLower()'">
+                            @genre
+                        </span>
+                    }
+
+                    @if (topGenres.Count >= 2)
+                    {
+                        var joinedGenres = string.Join(",", topGenres.Select(g => g.ToLower()));
+                        <span style="background: #333;" onclick="window.location.href='https://www.imdb.com/search/title/?title_type=feature,tv_movie,tv_special,video,tv_series,tv_miniseries&genres=@joinedGenres'">
+                            Recommend
+                        </span>
+                    }
+                </div>
+
+                <div class="vr mx-2"></div>
+
+                <form method="post" action="/Account/Logout" class="ms-3">
+                    <button class="btn btn-danger" type="submit">Logout</button>
+                </form>
+            </div>
+
         </div>
+
+
         @{
             string currentSortBy = Context.Request.Query["sortBy"];
             string currentSortOrder = Context.Request.Query["sortOrder"];
@@ -133,6 +221,7 @@
                         </td>
                         <td>@(item.Rating?.ToString() ?? "-")</td>
                         <td>@(item.InWatchlist ? "✅" : "-")</td>
+						<td>@item.Genres</td>
                         <td>@item.DateTime.ToString("g")</td>
                         <td>
                             <form method="post" asp-action="Delete" asp-controller="User">
@@ -144,6 +233,7 @@
                         </td>
                     </tr>
                 }
+
             </tbody>
         </table>
     </div>
