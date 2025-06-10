@@ -13,7 +13,7 @@ namespace Kinomatrix.Controllers
 {
     public class MoviesController : Controller // 🔹 Zmień z ControllerBase na Controller
     {
-        bool demo = true; /// DEMO
+        bool demo = false; /// DEMO
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _config;
         private static readonly Random _random = new Random();
@@ -34,7 +34,7 @@ namespace Kinomatrix.Controllers
             int validRatingCount = 0;
             double totalRating = 0;
            
-            if (data != null && data.Ratings[0].Value != null)
+            if (data != null && data.Ratings != null && data.Ratings.Count > 0 && data.Ratings[0].Value != null)
             {
                 string ratingValue = data.Ratings[0].Value;
                 string[] parts = ratingValue.Split('/');
@@ -101,13 +101,21 @@ namespace Kinomatrix.Controllers
         public static string Ratings(string jsonResponse)
         {
             dynamic data = JsonConvert.DeserializeObject<dynamic>(jsonResponse);
-            data.Ratings[0].Source = "IMDb";
+            if (data == null || data.Ratings == null || data.Ratings.Count == 0 || data.Ratings[0].Value == null)
+            {
+                return "No ratings available.";
+            }
+            else
+            {
+                data.Ratings[0].Source = "IMDb";
+            }
+
             return string.Join(", ", ((IEnumerable<dynamic>)data.Ratings).Select(r => $"{r.Source}: {r.Value}"));
         }
         public string GenerateStars(decimal? rating)
         {
             if (!rating.HasValue)
-                return new string('☆', 10); // or throw, depending on your needs
+                return new string('☆', 10);
 
             // Normalize rating to 0–10 scale and round to nearest whole number
             int filledStars = (int)Math.Round(rating.Value, MidpointRounding.AwayFromZero);
@@ -165,6 +173,7 @@ namespace Kinomatrix.Controllers
             var model = JsonConvert.DeserializeObject<MovieDetailsViewModel>(response);
             model.AverageRating = (CalculateFullRating(response)) / 10;
             model.AllRatings = Ratings(response);
+            if (model.AverageRating == null) model.AverageRating = 0;
             model.Stars = GenerateStars((int)Math.Round((decimal)model.AverageRating));
             return View("MovieDetails", model);
         }
