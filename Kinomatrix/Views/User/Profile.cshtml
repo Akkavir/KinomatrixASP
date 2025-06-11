@@ -100,7 +100,7 @@
 
             foreach (var item in Model)
             {
-                if (item.Rating.HasValue && item.Rating > 7)
+                if (item.Rating.HasValue && item.Rating >= 7)
                 {
                     if (!string.IsNullOrEmpty(item.Genres))
                     {
